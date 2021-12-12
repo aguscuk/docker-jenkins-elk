@@ -1,0 +1,59 @@
+version: '3.7'
+services:
+
+  elasticsearch:
+    image: elasticsearch:5.5.2
+    volumes:
+      - ./elasticsearch:/usr/share/elasticsearch/data/"
+    ports:
+      - "9200:9200"
+    networks:
+      - jenkins-net
+
+  logstash:
+    image: logstash:5.5.2
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/config/logstash.yml
+    command: logstash -f /usr/share/logstash/config/logstash.yml
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - jenkins-net
+
+  kibana:
+    image: kibana:5.5.2
+    ports:
+     - "5601:5601"
+    links:
+     - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on:
+     - elasticsearch
+    networks:
+      - jenkins-net
+
+  jenkins-casc:
+    build: .
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 50000:50000
+    container_name: jenkins-casc
+    volumes:
+      - ./jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker
+    environment:
+      - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID}
+      - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
+    env_file: .env
+    networks:
+      - jenkins-net
+
+networks:
+  jenkins-net:
+    driver: overlay
