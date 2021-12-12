@@ -34,3 +34,5 @@ RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 COPY jenkins-casc.yaml /usr/local/jenkins-casc.yaml
 ENV CASC_JENKINS_CONFIG /usr/local/jenkins-casc.yaml
+RUN mkdir -p /var/jenkins_home/jobs/test
+COPY config.xml /var/jenkins_home/jobs/test/config.xml
