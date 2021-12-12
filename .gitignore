@@ -26,3 +26,5 @@ jobs/**/*workspace
 
 .env
 .git
+jenkins/
+elasticsearch/
