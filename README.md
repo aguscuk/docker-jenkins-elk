@@ -18,4 +18,4 @@ Akses Elasticsearch: http://localhost:9200
 
 Cek index: http://localhost:9200/_cat/indices
 
-Akses Kibana: http://localhost:9200
+Akses Kibana: http://localhost:5601
